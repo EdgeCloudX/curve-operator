@@ -740,7 +740,8 @@ spec:
         - --enable-leader-election=true
         command:
         - ./curve-operator
-        image: curve2operator/curve-operator:v1.0.6
+        image: registry.eecos.cn:7443/ecf-edge/curve2operator/curve-operator:v1.0.6-dev
+        imagePullPolicy: Always
         name: curve-operator
         resources:
           limits:

@@ -127,8 +127,9 @@ func (c *Cluster) startProvisioningOverNodes(nodesInfo []daemon.NodeInfo, globak
 				name = strings.TrimRight(name, "/")
 				nameArr := strings.Split(name, "/")
 				name = nameArr[len(nameArr)-1]
-				resourceName := fmt.Sprintf("%s-%s-%s", AppName, node.nodeName, name)
-				currentConfigMapName := fmt.Sprintf("%s-%s-%s", ConfigMapNamePrefix, node.nodeName, name)
+				nodeName := strings.Replace(node.nodeName, ".", "-", -1)
+				resourceName := fmt.Sprintf("%s-%s-%s", AppName, nodeName, name)
+				currentConfigMapName := fmt.Sprintf("%s-%s-%s", ConfigMapNamePrefix, nodeName, name)
 
 				logger.Infof("creating job for device %q on host %q", device.Name, node.nodeName)
 

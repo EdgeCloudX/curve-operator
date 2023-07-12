@@ -33,7 +33,7 @@ func (c *Cluster) WaitForForamtJobCompletion(ctx context.Context, timeout time.D
 		du, completed, err := c.getJob2DeviceFormatProgress()
 		if err != nil {
 			logger.Errorf("failed to get device format progress %v", err)
-			return false, err
+			return false, nil
 		}
 		if completed {
 			return true, nil
@@ -85,6 +85,7 @@ func (c *Cluster) getJob2DeviceFormatProgress() ([]device2Use, bool, error) {
 
 		// one job one pod one container
 		pod := podList.Items[0]
+		logger.Infof("start getDevUsedbyExecRequest %s", pod.Name)
 		du, err := c.getDevUsedbyExecRequest(&pod, watchedNodeName, wathedDevice.Name, wathedDevice.Percentage, "Formatting")
 		if err != nil {
 			return []device2Use{}, false, errors.Wrap(err, "failed to get disk used percentage using exec request")
@@ -124,6 +125,7 @@ func (c *Cluster) getDevUsedbyExecRequest(pod *v1.Pod, nodeName, deviceName stri
 	})
 
 	if err != nil {
+		logger.Infof("exec %s %s", execOut.String(), execErr.String())
 		return device2Use{}, fmt.Errorf("could not execute: %v", err)
 	}
 
@@ -132,6 +134,9 @@ func (c *Cluster) getDevUsedbyExecRequest(pod *v1.Pod, nodeName, deviceName stri
 	}
 
 	cmdOutput := execOut.String()
+
+	logger.Infof("exec %s", cmdOutput)
+
 	re := regexp.MustCompile(`\S+\s+\S+\s+\S+\s+\S+\s+(?P<use>\d+)%`)
 	use := 0
 	match := re.FindStringSubmatch(cmdOutput)

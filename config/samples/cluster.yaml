@@ -9,7 +9,7 @@ spec:
   # The container image used to launch the Curve daemon pods(etcd, mds, chunkserver, snapshotclone).
   # v1.2 is Pacific and v1.3 is not tested.
   curveVersion:
-    image: curve2operator/curvebs:monitor-v1.2.6
+    image: registry.eecos.cn:7443/ecf-edge/curve2operator/curvebs:monitor-v1.2.6
     # Container image pull policy, 
     # By default the pull policy of all containers in that pod will be set to IfNotPresent if it is not explicitly specified and no modification necessary.
     imagePullPolicy: IfNotPresent
@@ -19,12 +19,12 @@ spec:
   # - node2 -> etcd-b, mds-b, snapshotclone-b
   # - node3 -> etcd-c, mds-c, snapshotclone-c
   nodes:
-  - curve-operator-node1
-  - curve-operator-node2
-  - curve-operator-node3
+  - 192.168.212.83
+  - 192.168.212.84
+  - 192.168.212.87
   # hostDataDir where data files and log files will be persisted on host machine. Must be specified.
   # If you reinstall the cluster, make surce that you delete this directory from each host.
-  hostDataDir: /curvebs
+  hostDataDir: /k8scurvebs
   etcd:
     # Port for listening to partner communication. 
     # Etcd member accept incoming requests from its peers on a specific scheme://IP:port combination and the IP is host ip because we use hostnetwork:true.
@@ -43,15 +43,18 @@ spec:
     # The hosts specified to deployment chunkserver as storage resource.
     # And you can configure the same nodes above configure that deploy etcd, mds and snapshotclone service.
     nodes:
-    - curve-operator-node1
-    - curve-operator-node2
-    - curve-operator-node3
+    - 192.168.212.83
+    - 192.168.212.84
+    - 192.168.212.87
     port: 8200
     copySets: 100
     # Make sure the devices configured are available on hosts above.
     devices:
-    - name: /dev/vdc
+    - name: /dev/nvme0n1
       mountPath: /data/chunkserver0
+      percentage: 30
+    - name: /dev/nvme1n1
+      mountPath: /data/chunkserver1
       percentage: 30
     # Not implement yet
     #selectedNodes:
