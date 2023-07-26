@@ -8,7 +8,7 @@ chunkfile_size=$4
 chunkfile_pool_dir=$5
 chunkfile_pool_meta_path=$6
 
-mkfs.ext4 $device_name
+mkfs.ext4 -F $device_name
 mount $device_name $device_mount_path
 
 cd /curvebs/tools/sbin
